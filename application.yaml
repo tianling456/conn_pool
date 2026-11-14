@@ -1,0 +1,76 @@
+app:
+  datasource:
+    default-pool: master
+    pools:
+      - name: master
+        driver: mysql
+        host: 127.0.0.1
+        port: 3306
+        database: master
+        username: tianling
+        password: 4030tianling
+        min-pool-size: 5
+        max-pool-size: 20
+        connection-timeout: 3000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        health-check:
+          enabled: true
+          interval: 30000
+          validation-query: "SELECT 1"
+          validation-timeout: 2000
+        retry:
+          max-attempts: 3
+          backoff: 300
+          multiplier: 2.0
+          max-backoff: 5000
+      - name: slave
+        driver: mysql
+        host: 127.0.0.1
+        port: 3306
+        database: slave
+        username: tianling
+        password: 4030tianling
+        min-pool-size: 2
+        max-pool-size: 10
+        connection-timeout: 2000
+        idle-timeout: 300000
+        max-lifetime: 1800000
+        health-check:
+          enabled: true
+          interval: 30000
+          validation-query: "SELECT 1"
+        retry:
+          max-attempts: 2
+          backoff: 200
+          multiplier: 2.0
+
+  sql:
+    default-datasource: master
+    substitution-policy: identifier
+    log:
+      enabled: true
+      params: true
+    mapper-locations:
+      - ../mappers/user.xml
+    interceptors:
+      - name: slow-sql-logger
+        priority: 10
+        params: { threshold-ms: "200" }
+      - name: query-cache
+        priority: 20
+        params: { max-size: "1024", ttl-seconds: "60" }
+      - name: metrics
+        priority: 30
+
+  tx:
+    methods:
+      - name: user.createUser
+        isolation: READ_COMMITTED
+        read-only: false
+        timeout-sec: 5
+        propagation: REQUIRED
+      - name: user.queryUsers
+        read-only: true
+        timeout-sec: 30
+        propagation: SUPPORTS
