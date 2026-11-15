@@ -245,9 +245,8 @@ public:
     }
 };
 
-std::unique_ptr<IConnectionFactory> makeConnectionFactory(const std::string& driver) {
-    if (driver == "mysql") return std::make_unique<MysqlConnectionFactory>();
-    throw std::runtime_error("unsupported driver: " + driver);
-}
-
+    std::unique_ptr<IConnectionFactory> createMysqlFactory() {
+        return std::make_unique<MysqlConnectionFactory>();
+    }
+    CP_REGISTER_DRIVER("mysql", createMysqlFactory)
 } // namespace cp

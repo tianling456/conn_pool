@@ -9,6 +9,8 @@
 #include "config/yaml_config.h"
 #include <memory>
 
+#include "connection_factory.h"
+
 namespace cp {
 
     class MysqlConnection : public IDbConnection {
@@ -43,7 +45,8 @@ namespace cp {
         struct Impl;
         std::unique_ptr<Impl> impl_;
     };
-
+    // ========= 新增：对外只暴露 MySQL 工厂入口 =========
+    std::unique_ptr<IConnectionFactory> makeMysqlConnectionFactory();
 } // namespace cp
 
 #endif //CONN_POOL_MYSQL_CONNECTION_H

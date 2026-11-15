@@ -44,6 +44,24 @@ app:
           max-attempts: 2
           backoff: 200
           multiplier: 2.0
+      - name: pg_main
+        driver: postgresql
+        host: 127.0.0.1
+        port: 5432
+        database: postgres
+        username: postgres
+        password: 4030tianling
+        min-pool-size: 3
+        max-pool-size: 15
+        connection-timeout: 3000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        health-check:
+          enabled: true
+          interval: 30000
+          validation-query: "SELECT 1"
+          validation-timeout: 2000
+          retry: { max-attempts: 3, backoff: 300, multiplier: 2.0, max-backoff: 5000 }
 
   sql:
     default-datasource: master
@@ -53,6 +71,7 @@ app:
       params: true
     mapper-locations:
       - ../mappers/user.xml
+      - ../mappers/order_pg.xml
     interceptors:
       - name: slow-sql-logger
         priority: 10

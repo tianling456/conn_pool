@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappers>
+    <mapper namespace="orderpg" default-datasource="pg_main">
+        <insert id="insertOrder"
+                tx-propagation="REQUIRED" tx-isolation="READ_COMMITTED">
+            <selectKey order="AFTER" keyProperty="id" resultType="int64">
+                SELECT LASTVAL()
+            </selectKey>
+            INSERT INTO order_info(order_no, amount) VALUES(#{orderNo}, #{amount})
+        </insert>
+
+        <select id="selectOrderById"
+                tx-propagation="SUPPORTS" tx-read-only="true">
+            SELECT id, order_no, amount FROM order_info WHERE id = #{id}
+        </select>
+    </mapper>
+</mappers>

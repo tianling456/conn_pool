@@ -69,6 +69,12 @@ int main() {
     if (cache) sql.setCache(cache);
     sql.setTransactionTemplate(tt);   // ← 注入，用于 XML tx-* 自动事务
 
+
+    // 临时放在 main.cpp 里验证
+    try { auto f = makeConnectionFactory("pg");  std::cout << "pg factory ok\n"; } catch (const std::exception& e) { std::cout << e.what() << "\n"; }
+    try { auto f = makeConnectionFactory("postgresql"); std::cout << "postgresql factory ok\n"; } catch (const std::exception& e) { std::cout << e.what() << "\n"; }
+    try { auto f = makeConnectionFactory("oracle"); std::cout << "oracle factory ok\n"; } catch (const std::exception& e) { std::cout << "expected: " << e.what() << "\n"; }
+
     // 1. DDL —— XML 无 tx 声明，直接执行
     sql.exec("user.createUserTable");
 
@@ -132,6 +138,25 @@ int main() {
     std::cout << pool->stats().toPrometheus(
         "master", pool->totalConnections(), pool->activeConnections(),
         pool->idleConnections(), pool->currentTimeoutMs());
+
+
+
+    // 走 PG
+    SqlParams p;
+    p.set("orderNo", std::string("ORD-001"));
+    p.set("amount",  100.5);
+    sql.update("orderpg.insertOrder", p);
+    std::cout << "pg order id = " << valueToString(*p.find("id")) << "\n";
+
+    // 跨库事务（同事务多数据源，各自独立 commit/rollback）
+    tt->run([&](TxSqlExecutor& e) {
+        SqlParams u; u.set("name", std::string("张三")); u.set("age", std::int64_t{25});
+        e.update("user.insertUser", u);              // 走 MySQL master
+        SqlParams o; o.set("orderNo", std::string("ORD-002")); o.set("amount", 50.0);
+        e.update("orderpg.insertOrder", o);          // 走 PostgreSQL
+        return 0;
+    });
+
 
     wd->stop();
     return 0;
