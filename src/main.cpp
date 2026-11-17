@@ -144,18 +144,40 @@ int main() {
     // 走 PG
     SqlParams p;
     p.set("orderNo", std::string("ORD-001"));
-    p.set("amount",  100.5);
+    p.set("amount", 100.5);
     sql.update("orderpg.insertOrder", p);
     std::cout << "pg order id = " << valueToString(*p.find("id")) << "\n";
 
     // 跨库事务（同事务多数据源，各自独立 commit/rollback）
-    tt->run([&](TxSqlExecutor& e) {
-        SqlParams u; u.set("name", std::string("张三")); u.set("age", std::int64_t{25});
-        e.update("user.insertUser", u);              // 走 MySQL master
-        SqlParams o; o.set("orderNo", std::string("ORD-002")); o.set("amount", 50.0);
-        e.update("orderpg.insertOrder", o);          // 走 PostgreSQL
+    tt->run([&](TxSqlExecutor &e) {
+        SqlParams u;
+        u.set("name", std::string("张三"));
+        u.set("age", std::int64_t{25});
+        e.update("user.insertUser", u); // 走 MySQL master
+        SqlParams o;
+        o.set("orderNo", std::string("ORD-002"));
+        o.set("amount", 50.0);
+        e.update("orderpg.insertOrder", o); // 走 PostgreSQL
         return 0;
     });
+
+
+    //oracle
+    SqlParams po;
+    po.set("empno", std::int64_t{7788});
+    po.set("ename", std::string("SCOTT"));
+    po.set("sal",   3000.0);
+    sql.update("employee.insertEmployee", p);
+
+
+    //sqllite
+    SqlParams pl;
+    pl.set("title", std::string("写单元测试"));
+    pl.set("done",  std::int64_t{0});
+    sql.update("todo.insert", p);
+    std::cout << "sqlite id = " << valueToString(*p.find("id")) << "\n";
+
+    auto rows = sql.query("todo.selectAll");
 
 
     wd->stop();

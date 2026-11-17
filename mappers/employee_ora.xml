@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappers>
+    <mapper namespace="employee" default-datasource="ora_main">
+        <select id="selectById" resultMap="employeeMap"
+                tx-propagation="SUPPORTS" tx-read-only="true">
+            SELECT empno, ename, sal FROM emp WHERE empno = #{empno}
+        </select>
+
+        <insert id="insertEmployee"
+                tx-propagation="REQUIRED" tx-isolation="READ_COMMITTED">
+            INSERT INTO emp(empno, ename, sal)
+            VALUES(#{empno}, #{ename}, #{sal})
+        </insert>
+
+        <update id="updateSal" tx-propagation="REQUIRED">
+            UPDATE emp SET sal = #{sal} WHERE empno = #{empno}
+        </update>
+    </mapper>
+</mappers>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappers>
+    <mapper namespace="todo" default-datasource="sqlite_local">
+
+        <resultMap id="todoMap" type="Todo">
+            <result column="id"         property="id"/>
+            <result column="title"      property="title"/>
+            <result column="done"       property="done"/>
+            <result column="created_at" property="createdAt"/>
+        </resultMap>
+
+        <select id="selectById" resultMap="todoMap"
+                tx-propagation="SUPPORTS" tx-read-only="true">
+            SELECT id, title, done, created_at FROM todo WHERE id = #{id}
+        </select>
+
+        <select id="selectAll" resultMap="todoMap"
+                tx-propagation="SUPPORTS" tx-read-only="true">
+            SELECT id, title, done, created_at FROM todo ORDER BY id
+        </select>
+
+        <insert id="insert" tx-propagation="REQUIRED">
+            <selectKey order="AFTER" keyProperty="id" resultType="int64">
+                SELECT last_insert_rowid()
+            </selectKey>
+            INSERT INTO todo(title, done, created_at)
+            VALUES(#{title}, #{done}, datetime('now'))
+        </insert>
+
+        <update id="markDone" tx-propagation="REQUIRED">
+            UPDATE todo SET done = 1 WHERE id = #{id}
+        </update>
+
+        <delete id="delete" tx-propagation="REQUIRED">
+            DELETE FROM todo WHERE id = #{id}
+        </delete>
+
+        <ddl id="createTable">
+            CREATE TABLE IF NOT EXISTS todo (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            title      TEXT NOT NULL,
+            done       INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT NOT NULL
+            )
+        </ddl>
+    </mapper>
+</mappers>
