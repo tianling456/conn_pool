@@ -1,6 +1,8 @@
 //
 // Created by aobo on 2026/11/15.
 //
+
+#ifdef CP_HAS_POSTGRES
 #include "db/postgres_connection.h"
 #include <cctype>
 #include <cstdio>
@@ -10,8 +12,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "db/connection_factory.h"
-
 namespace cp {
 namespace {
 
@@ -333,11 +333,17 @@ public:
     }
 };
 
-std::unique_ptr<IConnectionFactory> createPostgresFactory() {
+// std::unique_ptr<IConnectionFactory> createPostgresFactory() {
+//     return std::make_unique<PostgresConnectionFactory>();
+// }
+
+std::unique_ptr<IConnectionFactory> makePostgresConnectionFactory() {
     return std::make_unique<PostgresConnectionFactory>();
 }
-CP_REGISTER_DRIVER("postgresql", createPostgresFactory)
-CP_REGISTER_DRIVER("postgres",   createPostgresFactory)   // 别名
-CP_REGISTER_DRIVER("pg",         createPostgresFactory)
-CP_REGISTER_DRIVER("postgre",    createPostgresFactory)
+
+// CP_REGISTER_DRIVER("postgresql", createPostgresFactory)
+// CP_REGISTER_DRIVER("postgres",   createPostgresFactory)   // 别名
+// CP_REGISTER_DRIVER("pg",         createPostgresFactory)
+// CP_REGISTER_DRIVER("postgre",    createPostgresFactory)
 } // namespace cp
+#endif//CP_HAS_POSTGRES

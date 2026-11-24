@@ -5,6 +5,8 @@
 #ifndef CONN_POOL_MYSQL_CONNECTION_H
 #define CONN_POOL_MYSQL_CONNECTION_H
 
+#ifdef CP_HAS_MYSQL
+
 #include "db/db_connection.h"
 #include "config/yaml_config.h"
 #include <memory>
@@ -48,5 +50,7 @@ namespace cp {
     // ========= 新增：对外只暴露 MySQL 工厂入口 =========
     std::unique_ptr<IConnectionFactory> makeMysqlConnectionFactory();
 } // namespace cp
+
+#endif // CP_HAS_MYSQL
 
 #endif //CONN_POOL_MYSQL_CONNECTION_H

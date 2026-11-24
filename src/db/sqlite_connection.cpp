@@ -1,8 +1,9 @@
 //
 // Created by aobo on 2026/11/17.
 //
+
+#ifdef CP_HAS_SQLITE
 #include "db/sqlite_connection.h"
-#include "db/connection_factory.h"
 #include <sqlite3.h>
 #include <cctype>
 #include <cstdio>
@@ -265,11 +266,17 @@ public:
     }
 };
 
-static std::unique_ptr<IConnectionFactory> createSqliteFactory() {
+// std::unique_ptr<IConnectionFactory> createSqliteConnectionFactory() {
+//     return std::make_unique<SqliteConnectionFactory>();
+// }
+
+std::unique_ptr<IConnectionFactory> makeSqliteConnectionFactory() {
     return std::make_unique<SqliteConnectionFactory>();
 }
 
-CP_REGISTER_DRIVER("sqlite",  createSqliteFactory)
-CP_REGISTER_DRIVER("sqlite3", createSqliteFactory)
+// CP_REGISTER_DRIVER("sqlite",  createSqliteFactory)
+// CP_REGISTER_DRIVER("sqlite3", createSqliteFactory)
 
 } // namespace cp
+
+#endif//CP_HAS_SQLITE

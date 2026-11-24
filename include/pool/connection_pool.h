@@ -4,11 +4,10 @@
 #include "config/yaml_config.h"
 #include "db/connection_factory.h"
 #include "db/db_connection.h"
-#include "pool/retry.h"
 #include "pool/mpmc_queue.h"
 #include "pool/pool_stats.h"
+#include "pool/retry.h"
 #include "pool/trace.h"
-
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -133,6 +132,5 @@ struct ConnectionReleaser {
         if (auto p = wp.lock()) p->release(std::move(e));
     }
 };
-
 } // namespace cp
 #endif //CONN_POOL_CONNECTION_POOL_H

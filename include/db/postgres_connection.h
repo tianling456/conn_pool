@@ -5,6 +5,8 @@
 #ifndef CONN_POOL_POSTGRES_CONNECTION_H
 #define CONN_POOL_POSTGRES_CONNECTION_H
 
+#ifdef CP_HAS_POSTGRES
+
 #include "config/yaml_config.h"
 #include "db/db_connection.h"
 #include <memory>
@@ -50,5 +52,6 @@ namespace cp {
     std::unique_ptr<IConnectionFactory> makePostgresConnectionFactory();
 
 } // namespace cp
+#endif//CP_HAS_POSTGRES
 
 #endif //CONN_POOL_POSTGRES_CONNECTION_H

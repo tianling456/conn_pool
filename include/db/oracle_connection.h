@@ -5,8 +5,11 @@
 #ifndef CONN_POOL_ORACLE_CONNECTION_H
 #define CONN_POOL_ORACLE_CONNECTION_H
 
+#ifdef CP_HAS_ORACLE
+
 #include "config/yaml_config.h"
 #include "db/db_connection.h"
+#include "db/connection_factory.h"
 #include <memory>
 
 namespace cp {
@@ -47,5 +50,7 @@ namespace cp {
     std::unique_ptr<IConnectionFactory> makeOracleConnectionFactory();
 
 } // namespace cp
+
+#endif  //CP_HAS_ORACLE
 
 #endif //CONN_POOL_ORACLE_CONNECTION_H

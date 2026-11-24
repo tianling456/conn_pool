@@ -3,8 +3,8 @@
 //
 // 头文件
 // 实现
+#ifdef CP_HAS_MYSQL
 #include "db/mysql_connection.h"
-#include "db/connection_factory.h"
 #include <mysql/mysql.h>
 #include <cctype>
 #include <cstring>
@@ -245,8 +245,13 @@ public:
     }
 };
 
-    std::unique_ptr<IConnectionFactory> createMysqlFactory() {
+    // std::unique_ptr<IConnectionFactory> createMysqlFactory() {
+    //     return std::make_unique<MysqlConnectionFactory>();
+    // }
+
+    std::unique_ptr<IConnectionFactory> makeMysqlConnectionFactory() {
         return std::make_unique<MysqlConnectionFactory>();
     }
-    CP_REGISTER_DRIVER("mysql", createMysqlFactory)
+    // CP_REGISTER_DRIVER("mysql", createMysqlFactory)
 } // namespace cp
+#endif // CP_HAS_MYSQL

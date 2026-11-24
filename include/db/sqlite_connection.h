@@ -4,8 +4,10 @@
 
 #ifndef CONN_POOL_SQLITE_CONNECTION_H
 #define CONN_POOL_SQLITE_CONNECTION_H
+#ifdef CP_HAS_SQLITE
 #include "config/yaml_config.h"
 #include "db/db_connection.h"
+#include "db/connection_factory.h"
 #include <memory>
 
 namespace cp {
@@ -46,4 +48,6 @@ namespace cp {
     std::unique_ptr<IConnectionFactory> makeSqliteConnectionFactory();
 
 } // namespace cp
+
+#endif //CP_HAS_SQLITE
 #endif //CONN_POOL_SQLITE_CONNECTION_H
